@@ -17,20 +17,26 @@ const Home = () => {
         expenseDate.getMonth() === now.getMonth() &&
         expenseDate.getFullYear() === now.getFullYear()
       );
-    }
-    else if (selectedFilter === "week") {
+    } else if (selectedFilter === "week") {
       const startOfWeek = new Date(now);
       startOfWeek.setDate(now.getDate() - now.getDay());
       const endOfWeek = new Date(startOfWeek);
       endOfWeek.setDate(startOfWeek.getDate() + 6);
       return expenseDate >= startOfWeek && expenseDate <= endOfWeek;
-    }
-    else if (selectedFilter === "month") {
+    } else if (selectedFilter === "month") {
       return (
         expenseDate.getMonth() === now.getMonth() &&
         expenseDate.getFullYear() === now.getFullYear()
       );
-    } 
+    } else if (selectedFilter === "lastmonth") {
+      const lastMonth = new Date(now);
+      lastMonth.setMonth(now.getMonth() - 1);
+      return (
+        expenseDate.getMonth() === lastMonth.getMonth() &&
+        expenseDate.getFullYear() === lastMonth.getFullYear()
+      );
+    }
+    return true; // Default case, if no filter matches
   });
 
   return (
@@ -45,9 +51,9 @@ const Home = () => {
           </Text>
         </View>
       </View>
-      <View>
+      
         <Filters selected={selectedFilter} setSelected={setSelectedFilter} />
-      </View>
+
       <View>
         <Text
           style={{
