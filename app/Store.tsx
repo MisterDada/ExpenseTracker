@@ -5,6 +5,7 @@ type Expense ={
     amount: number;
     description: string;
     category: string;
+    date: Date;
 }
 
 interface StoreState {

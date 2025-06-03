@@ -24,6 +24,7 @@ const Create = () => {
       amount: parseFloat(amount),
       description,
       category,
+      date: new Date(),
     })
 
     setAmount("");
