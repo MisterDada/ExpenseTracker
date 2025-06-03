@@ -1,16 +1,35 @@
 import React, { useState } from "react";
-import { Pressable, SafeAreaView, StyleSheet, Text, TextInput, View } from "react-native";
+import {
+  Pressable,
+  SafeAreaView,
+  StyleSheet,
+  Text,
+  TextInput,
+  View,
+} from "react-native";
+import useStore from "./Store";
+
 
 const Create = () => {
-
   const [amount, setAmount] = useState("");
   const [description, setDescription] = useState("");
   const [category, setCategory] = useState("");
+  
 
-  function addExpense() {
-    
+  const addExpense = useStore((state) => state.addExpense);
+
+  const handleSubmit = () => {
+    addExpense({
+      id: new Date().getTime().toString() ,
+      amount: parseFloat(amount),
+      description,
+      category,
+    })
+
+    setAmount("");
+    setDescription("");
+    setCategory("");
   }
-
 
   return (
     <SafeAreaView style={{ flex: 1, backgroundColor: "white" }}>
@@ -31,7 +50,7 @@ const Create = () => {
         }}
       >
         <View style={{ gap: 10 }}>
-          <Text style={{fontSize: 18}}>Enter amount</Text>
+          <Text style={{ fontSize: 18 }}>Enter amount</Text>
           <TextInput
             style={{
               borderWidth: 0,
@@ -41,14 +60,15 @@ const Create = () => {
               height: 50,
               backgroundColor: "#f0f0f0",
             }}
-            placeholder="Enter expense name"
+            placeholder="Enter amount"
             placeholderTextColor="gray"
+            keyboardType="numeric"
             value={amount}
             onChangeText={(text) => setAmount(text)}
           ></TextInput>
         </View>
         <View style={{ gap: 10 }}>
-          <Text style={{fontSize: 18}}>Description</Text>
+          <Text style={{ fontSize: 18 }}>Description</Text>
           <TextInput
             style={{
               borderWidth: 0,
@@ -65,7 +85,7 @@ const Create = () => {
           ></TextInput>
         </View>
         <View style={{ gap: 10 }}>
-          <Text style={{fontSize: 18}}>Category</Text>
+          <Text style={{ fontSize: 18 }}>Category</Text>
           <TextInput
             style={{
               borderWidth: 0,
@@ -81,7 +101,9 @@ const Create = () => {
             onChangeText={(text) => setCategory(text)}
           ></TextInput>
         </View>
-        <Pressable>
+        <Pressable
+          onPress={() => handleSubmit()}
+        >
           <View
             style={{
               backgroundColor: "black",
