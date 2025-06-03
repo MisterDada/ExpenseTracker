@@ -1,10 +1,37 @@
-import React from "react";
+import React, { useState } from "react";
 import { SafeAreaView, StyleSheet, Text, View } from "react-native";
 import Filters from "./Filters";
 import useStore from "./Store";
 
 const Home = () => {
   const expenses = useStore((state) => state.expenses);
+  const [selectedFilter, setSelectedFilter] = useState("today");
+
+  // Filtering logic
+  const now = new Date();
+  const filteredExpenses = expenses.filter((expense: any) => {
+    const expenseDate = new Date(expense.date);
+    if (selectedFilter === "today") {
+      return (
+        expenseDate.getDate() === now.getDate() &&
+        expenseDate.getMonth() === now.getMonth() &&
+        expenseDate.getFullYear() === now.getFullYear()
+      );
+    }
+    else if (selectedFilter === "week") {
+      const startOfWeek = new Date(now);
+      startOfWeek.setDate(now.getDate() - now.getDay());
+      const endOfWeek = new Date(startOfWeek);
+      endOfWeek.setDate(startOfWeek.getDate() + 6);
+      return expenseDate >= startOfWeek && expenseDate <= endOfWeek;
+    }
+    else if (selectedFilter === "month") {
+      return (
+        expenseDate.getMonth() === now.getMonth() &&
+        expenseDate.getFullYear() === now.getFullYear()
+      );
+    } 
+  });
 
   return (
     <SafeAreaView style={{ flex: 1, backgroundColor: "rgb(231, 231, 231)" }}>
@@ -19,23 +46,23 @@ const Home = () => {
         </View>
       </View>
       <View>
-        <Filters />
+        <Filters selected={selectedFilter} setSelected={setSelectedFilter} />
       </View>
       <View>
         <Text
           style={{
             fontSize: 20,
             fontWeight: "bold",
-            paddingHorizontal: 40,
+            paddingHorizontal: 20,
             paddingVertical: 10,
           }}
         >
           Your Expenses
         </Text>
       </View>
-      <View style={{ paddingHorizontal: 40, paddingVertical: 10, gap: 20 }}>
+      <View style={{ paddingHorizontal: 20, paddingVertical: 10, gap: 20 }}>
         <View style={{ gap: 10 }}>
-          {expenses.map((item: any) => (
+          {filteredExpenses.map((item: any) => (
             <View
               style={{
                 backgroundColor: "white",
@@ -57,7 +84,7 @@ const Home = () => {
                   {item.description}
                 </Text>
                 <Text style={{ fontSize: 14, color: "gray" }}>
-                  {new Date().toLocaleDateString()}
+                  {new Date(item.date).toLocaleDateString()}
                 </Text>
               </View>
 
@@ -78,7 +105,7 @@ const styles = StyleSheet.create({
   header: {
     flexDirection: "row",
     alignItems: "center",
-    paddingHorizontal: 40,
+    paddingHorizontal: 20,
     paddingVertical: 20,
     gap: 20,
   },
